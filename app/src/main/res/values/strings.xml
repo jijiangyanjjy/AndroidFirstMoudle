@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">AndroidFirstMoudle</string>
+    <string name="toolBar_title">— —</string>
 </resources>
