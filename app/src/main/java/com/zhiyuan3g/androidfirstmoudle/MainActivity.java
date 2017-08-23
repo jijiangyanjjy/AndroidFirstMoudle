@@ -17,6 +17,7 @@ import com.google.gson.reflect.TypeToken;
 import com.zhiyuan3g.androidfirstmoudle.db.ProvinceDB;
 import com.zhiyuan3g.androidfirstmoudle.entity.ProvinceEntity;
 import com.zhiyuan3g.androidfirstmoudle.fragment.ProvinceFragment;
+import com.zhiyuan3g.androidfirstmoudle.utils.ContractUtils;
 import com.zhiyuan3g.androidfirstmoudle.utils.OkHttpCallBack;
 import com.zhiyuan3g.androidfirstmoudle.utils.OkHttpUtils;
 
@@ -65,21 +66,25 @@ public class MainActivity extends AppCompatActivity implements DrawerLayout.Draw
     }
 
     private void initHttp() {
-        OkHttpUtils.sendRequestGETMethod(this, "http://guolin.tech/api/china", new OkHttpCallBack() {
+        OkHttpUtils.sendRequestGETMethod(this, ContractUtils.URL_PROVINCE, new OkHttpCallBack() {
             @Override
             public void Success(String result) {
                 //如果成功存储数据到数据库
                 Gson gson = new Gson();
+                //通过Gson转换格式
                 List<ProvinceEntity> provinceEntityList = gson.fromJson(result,new TypeToken<List<ProvinceEntity>>(){}.getType());
                 for (ProvinceEntity entity : provinceEntityList){
                     ProvinceDB provinceDB = new ProvinceDB();
                     provinceDB.setName(entity.getName());
                     provinceDB.setId(entity.getId());
+                    //存储数据
                     provinceDB.save();
                 }
+                //每次加载完数据需要存储SP文件状态
                 SharedPreferences sp = getSharedPreferences("cool",MODE_PRIVATE);
                 SharedPreferences.Editor ed = sp.edit();
                 ed.putBoolean("isOk",true);
+                //提交Sp文件
                 ed.apply();
             }
 
@@ -115,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements DrawerLayout.Draw
                 drawerLayout.openDrawer(GravityCompat.START);
                 break;
         }
-        return true;
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

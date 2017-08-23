@@ -3,6 +3,8 @@ package com.zhiyuan3g.androidfirstmoudle.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.zhiyuan3g.androidfirstmoudle.R;
 import com.zhiyuan3g.androidfirstmoudle.adapter.ProvinceAdapter;
@@ -28,14 +31,15 @@ import butterknife.ButterKnife;
  * Created by kkkkk on 2017/8/22.
  */
 
-public class ProvinceFragment extends Fragment {
+public class ProvinceFragment extends Fragment implements ProvinceAdapter.OnItemClick {
     @BindView(R.id.province_toolBar)
     Toolbar provinceToolBar;
     @BindView(R.id.province_recyclerView)
     RecyclerView provinceRecyclerView;
 
     private ProvinceAdapter provinceAdapter;
-    private List<ProvinceEntity> listProvince;
+    //这个集合是你当前页面全部的数据
+    private List<ProvinceDB> all;
 
     @Nullable
     @Override
@@ -51,7 +55,7 @@ public class ProvinceFragment extends Fragment {
 
     private void initView() {
         //通过LitePal查询数据
-        List<ProvinceDB> all = DataSupport.findAll(ProvinceDB.class);
+        all = DataSupport.findAll(ProvinceDB.class);
         //把数据传到适配器
         provinceAdapter = new ProvinceAdapter(getActivity(),all);
         //创建布局管理器
@@ -60,6 +64,8 @@ public class ProvinceFragment extends Fragment {
         provinceRecyclerView.setLayoutManager(manager);
         //设置适配器
         provinceRecyclerView.setAdapter(provinceAdapter);
+        //给适配器添加监听
+        provinceAdapter.setOnItemClick(this);
     }
 
     private void initToolBar() {
@@ -70,5 +76,25 @@ public class ProvinceFragment extends Fragment {
             //隐藏原有标题栏
             actionBar.setDisplayShowTitleEnabled(false);
         }
+    }
+
+    @Override
+    public void itemClick(int position) {
+        //此处碎片使用new的形式，因为如果使用匿名对象的话，传递Bundle会出现崩溃
+        CityFragment cityFragment = new CityFragment();
+        //给另一个碎片传递消息
+        Bundle bundle = new Bundle();
+        //传递键值对
+        bundle.putInt("id",all.get(position).getId());
+        bundle.putString("name",all.get(position).getName());
+        //传递bundle对象
+        cityFragment.setArguments(bundle);
+
+        //替换碎片
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.main_container,cityFragment);
+        transaction.commit();
+
     }
 }
