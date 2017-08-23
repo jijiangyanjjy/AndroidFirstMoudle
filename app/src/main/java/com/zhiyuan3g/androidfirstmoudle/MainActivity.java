@@ -1,5 +1,6 @@
 package com.zhiyuan3g.androidfirstmoudle;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -11,7 +12,18 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.zhiyuan3g.androidfirstmoudle.db.ProvinceDB;
+import com.zhiyuan3g.androidfirstmoudle.entity.ProvinceEntity;
 import com.zhiyuan3g.androidfirstmoudle.fragment.ProvinceFragment;
+import com.zhiyuan3g.androidfirstmoudle.utils.OkHttpCallBack;
+import com.zhiyuan3g.androidfirstmoudle.utils.OkHttpUtils;
+
+import org.litepal.LitePal;
+import org.litepal.tablemanager.Connector;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,11 +44,50 @@ public class MainActivity extends AppCompatActivity implements DrawerLayout.Draw
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        //生成数据库
+        Connector.getDatabase();
+        //初始化主界面数据
         initView();
         //初始化ToolBar
         initToolBar();
         //给drawerLayout添加打开或关闭监听
         drawerLayout.addDrawerListener(this);
+        //根据你的sp表单状态，看看是否需要网络请求
+        initSp();
+    }
+
+    private void initSp() {
+        SharedPreferences sp = getSharedPreferences("cool",MODE_PRIVATE);
+        boolean isOk = sp.getBoolean("isOk", false);
+        if(!isOk){
+            initHttp();
+        }
+    }
+
+    private void initHttp() {
+        OkHttpUtils.sendRequestGETMethod(this, "http://guolin.tech/api/china", new OkHttpCallBack() {
+            @Override
+            public void Success(String result) {
+                //如果成功存储数据到数据库
+                Gson gson = new Gson();
+                List<ProvinceEntity> provinceEntityList = gson.fromJson(result,new TypeToken<List<ProvinceEntity>>(){}.getType());
+                for (ProvinceEntity entity : provinceEntityList){
+                    ProvinceDB provinceDB = new ProvinceDB();
+                    provinceDB.setName(entity.getName());
+                    provinceDB.setId(entity.getId());
+                    provinceDB.save();
+                }
+                SharedPreferences sp = getSharedPreferences("cool",MODE_PRIVATE);
+                SharedPreferences.Editor ed = sp.edit();
+                ed.putBoolean("isOk",true);
+                ed.apply();
+            }
+
+            @Override
+            public void Failure(String failure) {
+
+            }
+        });
     }
 
     private void initView() {
