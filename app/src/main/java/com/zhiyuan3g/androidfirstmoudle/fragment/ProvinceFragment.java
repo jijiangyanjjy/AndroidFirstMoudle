@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -12,6 +13,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.zhiyuan3g.androidfirstmoudle.R;
+import com.zhiyuan3g.androidfirstmoudle.adapter.ProvinceAdapter;
+import com.zhiyuan3g.androidfirstmoudle.db.ProvinceDB;
+import com.zhiyuan3g.androidfirstmoudle.entity.ProvinceEntity;
+
+import org.litepal.crud.DataSupport;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -26,6 +34,9 @@ public class ProvinceFragment extends Fragment {
     @BindView(R.id.province_recyclerView)
     RecyclerView provinceRecyclerView;
 
+    private ProvinceAdapter provinceAdapter;
+    private List<ProvinceEntity> listProvince;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -33,7 +44,22 @@ public class ProvinceFragment extends Fragment {
         ButterKnife.bind(this, view);
         //初始化ToolBar
         initToolBar();
+        //展示列表
+        initView();
         return view;
+    }
+
+    private void initView() {
+        //通过LitePal查询数据
+        List<ProvinceDB> all = DataSupport.findAll(ProvinceDB.class);
+        //把数据传到适配器
+        provinceAdapter = new ProvinceAdapter(getActivity(),all);
+        //创建布局管理器
+        LinearLayoutManager manager = new LinearLayoutManager(getActivity());
+        //设置布局管理器
+        provinceRecyclerView.setLayoutManager(manager);
+        //设置适配器
+        provinceRecyclerView.setAdapter(provinceAdapter);
     }
 
     private void initToolBar() {
