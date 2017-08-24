@@ -8,7 +8,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.ContentFrameLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -20,7 +19,10 @@ import android.widget.TextView;
 
 import com.zhiyuan3g.androidfirstmoudle.R;
 import com.zhiyuan3g.androidfirstmoudle.adapter.CityAdapter;
+import com.zhiyuan3g.androidfirstmoudle.adapter.CountryAdapter;
 import com.zhiyuan3g.androidfirstmoudle.db.CityDB;
+import com.zhiyuan3g.androidfirstmoudle.db.CountryDB;
+import com.zhiyuan3g.androidfirstmoudle.db.ProvinceDB;
 import com.zhiyuan3g.androidfirstmoudle.utils.ContractUtils;
 import com.zhiyuan3g.androidfirstmoudle.utils.OkHttpCallBack;
 import com.zhiyuan3g.androidfirstmoudle.utils.OkHttpUtils;
@@ -40,7 +42,7 @@ import butterknife.ButterKnife;
  * Created by kkkkk on 2017/8/23.
  */
 
-public class CityFragment extends Fragment {
+public class CountryFragment extends Fragment {
     @BindView(R.id.tv_province_title)
     TextView tvProvinceTitle;
     @BindView(R.id.province_toolBar)
@@ -49,8 +51,8 @@ public class CityFragment extends Fragment {
     RecyclerView provinceRecyclerView;
 
     private FragmentManager fragmentManager;
-    private int id;
-    private List<CityDB> cityDBList;
+    private int id,provinceId;
+    private List<CountryDB> countryDBs;
 
     private ProgressDialog progressDialog;
 
@@ -61,6 +63,7 @@ public class CityFragment extends Fragment {
         ButterKnife.bind(this, view);
         Bundle bundle = getArguments();
         id = bundle.getInt("id");
+        provinceId = bundle.getInt("provinceId");
         String name = bundle.getString("name");
         initToolBar(name);
         initFindDB();
@@ -68,35 +71,14 @@ public class CityFragment extends Fragment {
     }
 
     private void initFindDB() {
-        final List<CityDB> cityDBs = DataSupport.where("provinceCode = ?", String.valueOf(id)).find(CityDB.class);
-        if(cityDBs.isEmpty()){
+        List<CountryDB> countryDBs = DataSupport.where("cityCode = ?", String.valueOf(id)).find(CountryDB.class);
+        if(countryDBs.isEmpty()){
             initHttp();
         }else{
-            CityAdapter cityAdapter = new CityAdapter(getActivity(),cityDBs);
+            CountryAdapter countryAdapter = new CountryAdapter(getActivity(),countryDBs);
             LinearLayoutManager manager = new LinearLayoutManager(getActivity());
             provinceRecyclerView.setLayoutManager(manager);
-            provinceRecyclerView.setAdapter(cityAdapter);
-            cityAdapter.setOnItemClick(new CityAdapter.OnItemClick() {
-                @Override
-                public void itemClick(int position) {
-                    //此处碎片使用new的形式，因为如果使用匿名对象的话，传递Bundle会出现崩溃
-                    CountryFragment countryFragment = new CountryFragment();
-                    //给另一个碎片传递消息
-                    Bundle bundle = new Bundle();
-                    //传递键值对
-                    bundle.putInt("id",cityDBs.get(position).getCityCode());
-                    bundle.putInt("provinceId",cityDBs.get(position).getProvinceCode());
-                    bundle.putString("name",cityDBs.get(position).getName());
-                    //传递bundle对象
-                    countryFragment.setArguments(bundle);
-
-                    //替换碎片
-                    FragmentManager fragmentManager = getFragmentManager();
-                    FragmentTransaction transaction = fragmentManager.beginTransaction();
-                    transaction.replace(R.id.main_container,countryFragment);
-                    transaction.commit();
-                }
-            });
+            provinceRecyclerView.setAdapter(countryAdapter);
         }
     }
 
@@ -108,7 +90,7 @@ public class CityFragment extends Fragment {
         progressDialog.setCancelable(false);
         progressDialog.show();
 
-        OkHttpUtils.sendRequestGETMethod(getActivity(), ContractUtils.URL_CITY + id, new OkHttpCallBack() {
+        OkHttpUtils.sendRequestGETMethod(getActivity(), ContractUtils.URL_CITY+provinceId+"/"+id, new OkHttpCallBack() {
             @Override
             public void Success(String result) {
                 try {
@@ -117,40 +99,21 @@ public class CityFragment extends Fragment {
                     for (int i=0;i<jsonArray.length();i++){
                         JSONObject jsonObject = (JSONObject) jsonArray.get(i);
                         //给实体类赋值
-                        CityDB cityDB = new CityDB();
-                        cityDB.setCityCode(jsonObject.getInt("id"));
-                        cityDB.setName(jsonObject.getString("name"));
-                        cityDB.setProvinceCode(id);
-                        cityDB.save();
+                        CountryDB countryDB = new CountryDB();
+                        countryDB.setCityCode(id);
+                        countryDB.setName(jsonObject.getString("name"));
+                        countryDB.setCountryCode(jsonObject.getInt("id"));
+                        countryDB.setWeather_id(jsonObject.getString("weather_id"));
+                        countryDB.save();
                         //把这个实体类添加进入集合
-                        cityDBList.add(cityDB);
+                        countryDBs.add(countryDB);
                     }
-                    CityAdapter cityAdapter = new CityAdapter(getActivity(),cityDBList);
+                    CountryAdapter countryAdapter = new CountryAdapter(getActivity(),countryDBs);
                     LinearLayoutManager manager = new LinearLayoutManager(getActivity());
                     provinceRecyclerView.setLayoutManager(manager);
-                    provinceRecyclerView.setAdapter(cityAdapter);
-                    progressDialog.dismiss();
-                    cityAdapter.setOnItemClick(new CityAdapter.OnItemClick() {
-                        @Override
-                        public void itemClick(int position) {
-                            //此处碎片使用new的形式，因为如果使用匿名对象的话，传递Bundle会出现崩溃
-                            CountryFragment countryFragment = new CountryFragment();
-                            //给另一个碎片传递消息
-                            Bundle bundle = new Bundle();
-                            //传递键值对
-                            bundle.putInt("id",cityDBList.get(position).getCityCode());
-                            bundle.putInt("provinceId",cityDBList.get(position).getProvinceCode());
-                            bundle.putString("name",cityDBList.get(position).getName());
-                            //传递bundle对象
-                            countryFragment.setArguments(bundle);
+                    provinceRecyclerView.setAdapter(countryAdapter);
 
-                            //替换碎片
-                            FragmentManager fragmentManager = getFragmentManager();
-                            FragmentTransaction transaction = fragmentManager.beginTransaction();
-                            transaction.replace(R.id.main_container,countryFragment);
-                            transaction.commit();
-                        }
-                    });
+                    progressDialog.dismiss();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -167,7 +130,7 @@ public class CityFragment extends Fragment {
     private void initToolBar(String name) {
         progressDialog = new ProgressDialog(getActivity());
 
-        cityDBList = new ArrayList<>();
+        countryDBs = new ArrayList<>();
         //这行代码会让你的Fragment中的toolbar生效
         setHasOptionsMenu(true);
         fragmentManager = getFragmentManager();
@@ -186,8 +149,16 @@ public class CityFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case android.R.id.home:
+                CityFragment cityFragment = new CityFragment();
+                List<ProvinceDB> provinceDBs = DataSupport.where("id = ?", String.valueOf(provinceId)).find(ProvinceDB.class);
+                int cityCode = provinceDBs.get(0).getId();
+                String name = provinceDBs.get(0).getName();
+                Bundle bundle = new Bundle();
+                bundle.putInt("id",cityCode);
+                bundle.putString("name",name);
+                cityFragment.setArguments(bundle);
                 FragmentTransaction transaction = fragmentManager.beginTransaction();
-                transaction.replace(R.id.main_container,new ProvinceFragment());
+                transaction.replace(R.id.main_container,cityFragment);
                 transaction.commit();
                 break;
         }
