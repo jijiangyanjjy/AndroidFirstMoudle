@@ -11,17 +11,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.zhiyuan3g.androidfirstmoudle.db.ProvinceDB;
 import com.zhiyuan3g.androidfirstmoudle.entity.ProvinceEntity;
+import com.zhiyuan3g.androidfirstmoudle.entity.WeatherCity;
 import com.zhiyuan3g.androidfirstmoudle.fragment.ProvinceFragment;
 import com.zhiyuan3g.androidfirstmoudle.utils.ContractUtils;
 import com.zhiyuan3g.androidfirstmoudle.utils.OkHttpCallBack;
 import com.zhiyuan3g.androidfirstmoudle.utils.OkHttpUtils;
 
-import org.litepal.LitePal;
 import org.litepal.tablemanager.Connector;
 
 import java.util.List;
@@ -35,6 +36,8 @@ public class MainActivity extends AppCompatActivity implements DrawerLayout.Draw
     Toolbar toolBar;
     @BindView(R.id.drawerLayout)
     DrawerLayout drawerLayout;
+    @BindView(R.id.tv_title)
+    TextView tvTitle;
 
     private FragmentManager fragmentManager;
 
@@ -57,10 +60,22 @@ public class MainActivity extends AppCompatActivity implements DrawerLayout.Draw
         initSp();
     }
 
+    public void close() {
+        drawerLayout.closeDrawers();
+    }
+
+    public void updateData(Object object,int a) {
+        if(a==1){
+            tvTitle.setText(((WeatherZhi)object).getHeWeather().get(0).getBasic().getCity());
+        }else{
+            tvTitle.setText(((WeatherCity)object).getHeWeather().get(0).getBasic().getCity());
+        }
+    }
+
     private void initSp() {
-        SharedPreferences sp = getSharedPreferences("cool",MODE_PRIVATE);
+        SharedPreferences sp = getSharedPreferences("cool", MODE_PRIVATE);
         boolean isOk = sp.getBoolean("isOk", false);
-        if(!isOk){
+        if (!isOk) {
             initHttp();
         }
     }
@@ -72,8 +87,9 @@ public class MainActivity extends AppCompatActivity implements DrawerLayout.Draw
                 //如果成功存储数据到数据库
                 Gson gson = new Gson();
                 //通过Gson转换格式
-                List<ProvinceEntity> provinceEntityList = gson.fromJson(result,new TypeToken<List<ProvinceEntity>>(){}.getType());
-                for (ProvinceEntity entity : provinceEntityList){
+                List<ProvinceEntity> provinceEntityList = gson.fromJson(result, new TypeToken<List<ProvinceEntity>>() {
+                }.getType());
+                for (ProvinceEntity entity : provinceEntityList) {
                     ProvinceDB provinceDB = new ProvinceDB();
                     provinceDB.setName(entity.getName());
                     provinceDB.setId(entity.getId());
@@ -81,9 +97,9 @@ public class MainActivity extends AppCompatActivity implements DrawerLayout.Draw
                     provinceDB.save();
                 }
                 //每次加载完数据需要存储SP文件状态
-                SharedPreferences sp = getSharedPreferences("cool",MODE_PRIVATE);
+                SharedPreferences sp = getSharedPreferences("cool", MODE_PRIVATE);
                 SharedPreferences.Editor ed = sp.edit();
-                ed.putBoolean("isOk",true);
+                ed.putBoolean("isOk", true);
                 //提交Sp文件
                 ed.apply();
             }
@@ -137,7 +153,7 @@ public class MainActivity extends AppCompatActivity implements DrawerLayout.Draw
     @Override
     public void onDrawerClosed(View drawerView) {
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.main_container,new ProvinceFragment());
+        transaction.replace(R.id.main_container, new ProvinceFragment());
         transaction.commit();
         isOk = true;
     }
