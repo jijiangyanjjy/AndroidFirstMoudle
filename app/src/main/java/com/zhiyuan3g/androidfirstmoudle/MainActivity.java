@@ -64,14 +64,6 @@ public class MainActivity extends AppCompatActivity implements DrawerLayout.Draw
         drawerLayout.closeDrawers();
     }
 
-    public void updateData(Object object,int a) {
-        if(a==1){
-            tvTitle.setText(((WeatherZhi)object).getHeWeather().get(0).getBasic().getCity());
-        }else{
-            tvTitle.setText(((WeatherCity)object).getHeWeather().get(0).getBasic().getCity());
-        }
-    }
-
     private void initSp() {
         SharedPreferences sp = getSharedPreferences("cool", MODE_PRIVATE);
         boolean isOk = sp.getBoolean("isOk", false);
