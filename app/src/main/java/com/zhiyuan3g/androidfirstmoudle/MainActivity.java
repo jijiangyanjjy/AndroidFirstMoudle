@@ -136,6 +136,9 @@ public class MainActivity extends AppCompatActivity implements DrawerLayout.Draw
     //侧滑栏关闭监听（完全关闭后才会调用）
     @Override
     public void onDrawerClosed(View drawerView) {
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.main_container,new ProvinceFragment());
+        transaction.commit();
         isOk = true;
     }
 

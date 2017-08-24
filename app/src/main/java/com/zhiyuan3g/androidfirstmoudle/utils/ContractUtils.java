@@ -10,4 +10,6 @@ public class ContractUtils {
 
     public static final String URL_CITY = URL_PROVINCE+"/";
 
+    public static final String URL_COUNTRY = URL_CITY+"/";
+
 }
