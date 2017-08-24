@@ -16,11 +16,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.zhiyuan3g.androidfirstmoudle.MainActivity;
 import com.zhiyuan3g.androidfirstmoudle.R;
-import com.zhiyuan3g.androidfirstmoudle.adapter.CityAdapter;
 import com.zhiyuan3g.androidfirstmoudle.adapter.CountryAdapter;
-import com.zhiyuan3g.androidfirstmoudle.db.CityDB;
+import com.zhiyuan3g.androidfirstmoudle.base.MyApp;
 import com.zhiyuan3g.androidfirstmoudle.db.CountryDB;
 import com.zhiyuan3g.androidfirstmoudle.db.ProvinceDB;
 import com.zhiyuan3g.androidfirstmoudle.utils.ContractUtils;
@@ -71,7 +73,7 @@ public class CountryFragment extends Fragment {
     }
 
     private void initFindDB() {
-        List<CountryDB> countryDBs = DataSupport.where("cityCode = ?", String.valueOf(id)).find(CountryDB.class);
+        final List<CountryDB> countryDBs = DataSupport.where("cityCode = ?", String.valueOf(id)).find(CountryDB.class);
         if(countryDBs.isEmpty()){
             initHttp();
         }else{
@@ -79,16 +81,42 @@ public class CountryFragment extends Fragment {
             LinearLayoutManager manager = new LinearLayoutManager(getActivity());
             provinceRecyclerView.setLayoutManager(manager);
             provinceRecyclerView.setAdapter(countryAdapter);
+
+            countryAdapter.setOnItemClick(new CountryAdapter.OnItemClick() {
+                @Override
+                public void itemClick(int position) {
+                    ((MainActivity)getActivity()).close();
+                    progressInit();
+                    //请求接口
+                    OkHttpUtils.sendRequestGETMethod(getActivity(), ContractUtils.URL_WEATHER + countryDBs.get(position).getWeather_id(), new OkHttpCallBack() {
+                        @Override
+                        public void Success(String result) {
+                            Gson sGson = new Gson();
+                            progressDialog.dismiss();
+                        }
+
+                        @Override
+                        public void Failure(String failure) {
+                            progressDialog.dismiss();
+                            Toast.makeText(MyApp.getContext(), failure, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            });
         }
     }
 
-
-    private void initHttp() {
+    public void progressInit(){
         //设置dialog标题内容
         progressDialog.setTitle("提示");
         progressDialog.setMessage("请等待...");
         progressDialog.setCancelable(false);
         progressDialog.show();
+    }
+
+
+    private void initHttp() {
+        progressInit();
 
         OkHttpUtils.sendRequestGETMethod(getActivity(), ContractUtils.URL_CITY+provinceId+"/"+id, new OkHttpCallBack() {
             @Override
@@ -112,12 +140,32 @@ public class CountryFragment extends Fragment {
                     LinearLayoutManager manager = new LinearLayoutManager(getActivity());
                     provinceRecyclerView.setLayoutManager(manager);
                     provinceRecyclerView.setAdapter(countryAdapter);
-
                     progressDialog.dismiss();
+
+                    countryAdapter.setOnItemClick(new CountryAdapter.OnItemClick() {
+                        @Override
+                        public void itemClick(int position) {
+                            ((MainActivity)getActivity()).close();
+                            //请求接口
+                            progressInit();
+                            OkHttpUtils.sendRequestGETMethod(getActivity(), ContractUtils.URL_WEATHER + countryDBs.get(position).getWeather_id(), new OkHttpCallBack() {
+                                @Override
+                                public void Success(String result) {
+                                    Gson sGson = new Gson();
+                                    progressDialog.dismiss();
+                                }
+
+                                @Override
+                                public void Failure(String failure) {
+                                    progressDialog.dismiss();
+                                    Toast.makeText(MyApp.getContext(), failure, Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+                    });
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
             }
 
             @Override

@@ -11,10 +11,17 @@ import org.litepal.LitePal;
 
 public class MyApp extends Application {
 
+    private static Context context;
+
     @Override
     public void onCreate() {
         super.onCreate();
         //初始化LitePal
+        context = getApplicationContext();
         LitePal.initialize(this);
+    }
+
+    public static Context getContext(){
+        return context;
     }
 }

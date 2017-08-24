@@ -43,7 +43,13 @@ public class OkHttpUtils {
                 } catch (IOException e) {
                     e.printStackTrace();
                     if (okHttpCallBack != null) {
-                        okHttpCallBack.Failure("网络连接失败");
+                        activity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                okHttpCallBack.Failure("网络连接失败");
+                            }
+                        });
+
                     }
                 }
             }
