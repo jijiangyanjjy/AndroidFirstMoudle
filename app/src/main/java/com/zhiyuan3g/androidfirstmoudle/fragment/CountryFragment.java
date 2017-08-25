@@ -25,6 +25,7 @@ import com.zhiyuan3g.androidfirstmoudle.adapter.CountryAdapter;
 import com.zhiyuan3g.androidfirstmoudle.base.MyApp;
 import com.zhiyuan3g.androidfirstmoudle.db.CountryDB;
 import com.zhiyuan3g.androidfirstmoudle.db.ProvinceDB;
+import com.zhiyuan3g.androidfirstmoudle.entity.WeatherEntity;
 import com.zhiyuan3g.androidfirstmoudle.utils.ContractUtils;
 import com.zhiyuan3g.androidfirstmoudle.utils.OkHttpCallBack;
 import com.zhiyuan3g.androidfirstmoudle.utils.OkHttpUtils;
@@ -52,8 +53,9 @@ public class CountryFragment extends Fragment {
     @BindView(R.id.province_recyclerView)
     RecyclerView provinceRecyclerView;
 
+    private MainActivity mainActivity;
     private FragmentManager fragmentManager;
-    private int id,provinceId;
+    private int id, provinceId;
     private List<CountryDB> countryDBs;
 
     private ProgressDialog progressDialog;
@@ -63,6 +65,7 @@ public class CountryFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_province, container, false);
         ButterKnife.bind(this, view);
+        mainActivity = (MainActivity) getActivity();
         Bundle bundle = getArguments();
         id = bundle.getInt("id");
         provinceId = bundle.getInt("provinceId");
@@ -74,39 +77,14 @@ public class CountryFragment extends Fragment {
 
     private void initFindDB() {
         final List<CountryDB> countryDBs = DataSupport.where("cityCode = ?", String.valueOf(id)).find(CountryDB.class);
-        if(countryDBs.isEmpty()){
+        if (countryDBs.isEmpty()) {
             initHttp();
-        }else{
-            CountryAdapter countryAdapter = new CountryAdapter(getActivity(),countryDBs);
-            LinearLayoutManager manager = new LinearLayoutManager(getActivity());
-            provinceRecyclerView.setLayoutManager(manager);
-            provinceRecyclerView.setAdapter(countryAdapter);
-
-            countryAdapter.setOnItemClick(new CountryAdapter.OnItemClick() {
-                @Override
-                public void itemClick(int position) {
-                    ((MainActivity)getActivity()).close();
-                    progressInit();
-                    //请求接口
-                    OkHttpUtils.sendRequestGETMethod(getActivity(), ContractUtils.URL_WEATHER + countryDBs.get(position).getWeather_id(), new OkHttpCallBack() {
-                        @Override
-                        public void Success(String result) {
-                            Gson sGson = new Gson();
-                            progressDialog.dismiss();
-                        }
-
-                        @Override
-                        public void Failure(String failure) {
-                            progressDialog.dismiss();
-                            Toast.makeText(MyApp.getContext(), failure, Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
-            });
+        } else {
+            initRecyclerView(countryDBs);
         }
     }
 
-    public void progressInit(){
+    public void progressInit() {
         //设置dialog标题内容
         progressDialog.setTitle("提示");
         progressDialog.setMessage("请等待...");
@@ -118,13 +96,13 @@ public class CountryFragment extends Fragment {
     private void initHttp() {
         progressInit();
 
-        OkHttpUtils.sendRequestGETMethod(getActivity(), ContractUtils.URL_CITY+provinceId+"/"+id, new OkHttpCallBack() {
+        OkHttpUtils.sendRequestGETMethod(getActivity(), ContractUtils.URL_CITY + provinceId + "/" + id, new OkHttpCallBack() {
             @Override
             public void Success(String result) {
                 try {
                     //此处使用源生解析，因为Gson会自动生成id，会覆盖数据中的id字段
                     JSONArray jsonArray = new JSONArray(result);
-                    for (int i=0;i<jsonArray.length();i++){
+                    for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject jsonObject = (JSONObject) jsonArray.get(i);
                         //给实体类赋值
                         CountryDB countryDB = new CountryDB();
@@ -136,33 +114,7 @@ public class CountryFragment extends Fragment {
                         //把这个实体类添加进入集合
                         countryDBs.add(countryDB);
                     }
-                    CountryAdapter countryAdapter = new CountryAdapter(getActivity(),countryDBs);
-                    LinearLayoutManager manager = new LinearLayoutManager(getActivity());
-                    provinceRecyclerView.setLayoutManager(manager);
-                    provinceRecyclerView.setAdapter(countryAdapter);
-                    progressDialog.dismiss();
-
-                    countryAdapter.setOnItemClick(new CountryAdapter.OnItemClick() {
-                        @Override
-                        public void itemClick(int position) {
-                            ((MainActivity)getActivity()).close();
-                            //请求接口
-                            progressInit();
-                            OkHttpUtils.sendRequestGETMethod(getActivity(), ContractUtils.URL_WEATHER + countryDBs.get(position).getWeather_id(), new OkHttpCallBack() {
-                                @Override
-                                public void Success(String result) {
-                                    Gson sGson = new Gson();
-                                    progressDialog.dismiss();
-                                }
-
-                                @Override
-                                public void Failure(String failure) {
-                                    progressDialog.dismiss();
-                                    Toast.makeText(MyApp.getContext(), failure, Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                        }
-                    });
+                    initRecyclerView(countryDBs);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -175,6 +127,39 @@ public class CountryFragment extends Fragment {
         });
     }
 
+    private void initRecyclerView(final List<CountryDB> countryDBs) {
+        CountryAdapter countryAdapter = new CountryAdapter(getActivity(), countryDBs);
+        LinearLayoutManager manager = new LinearLayoutManager(getActivity());
+        provinceRecyclerView.setLayoutManager(manager);
+        provinceRecyclerView.setAdapter(countryAdapter);
+        progressDialog.dismiss();
+
+        countryAdapter.setOnItemClick(new CountryAdapter.OnItemClick() {
+            @Override
+            public void itemClick(int position) {
+                mainActivity.close();
+                //请求接口
+                progressInit();
+                OkHttpUtils.sendRequestGETMethod(getActivity(), ContractUtils.URL_WEATHER + countryDBs.get(position).getWeather_id(), new OkHttpCallBack() {
+                    @Override
+                    public void Success(String result) {
+                        Gson sGson = new Gson();
+                        WeatherEntity weatherEntity = sGson.fromJson(result, WeatherEntity.class);
+                        System.out.println(sGson.toJson(weatherEntity));
+                        mainActivity.getWeather(weatherEntity);
+                        progressDialog.dismiss();
+                    }
+
+                    @Override
+                    public void Failure(String failure) {
+                        progressDialog.dismiss();
+                        Toast.makeText(MyApp.getContext(), failure, Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+    }
+
     private void initToolBar(String name) {
         progressDialog = new ProgressDialog(getActivity());
 
@@ -183,9 +168,9 @@ public class CountryFragment extends Fragment {
         setHasOptionsMenu(true);
         fragmentManager = getFragmentManager();
         //因为此setSupportActionBar方法只存在Activity中，所以需要强制转换。
-        ((AppCompatActivity)getActivity()).setSupportActionBar(provinceToolBar);
-        ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
-        if(actionBar!=null){
+        ((AppCompatActivity) getActivity()).setSupportActionBar(provinceToolBar);
+        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        if (actionBar != null) {
             //隐藏原有标题栏
             actionBar.setDisplayShowTitleEnabled(false);
             actionBar.setDisplayHomeAsUpEnabled(true);
@@ -195,18 +180,18 @@ public class CountryFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case android.R.id.home:
                 CityFragment cityFragment = new CityFragment();
                 List<ProvinceDB> provinceDBs = DataSupport.where("id = ?", String.valueOf(provinceId)).find(ProvinceDB.class);
                 int cityCode = provinceDBs.get(0).getId();
                 String name = provinceDBs.get(0).getName();
                 Bundle bundle = new Bundle();
-                bundle.putInt("id",cityCode);
-                bundle.putString("name",name);
+                bundle.putInt("id", cityCode);
+                bundle.putString("name", name);
                 cityFragment.setArguments(bundle);
                 FragmentTransaction transaction = fragmentManager.beginTransaction();
-                transaction.replace(R.id.main_container,cityFragment);
+                transaction.replace(R.id.main_container, cityFragment);
                 transaction.commit();
                 break;
         }

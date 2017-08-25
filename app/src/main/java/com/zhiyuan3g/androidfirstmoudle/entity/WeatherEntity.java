@@ -3,10 +3,10 @@ package com.zhiyuan3g.androidfirstmoudle.entity;
 import java.util.List;
 
 /**
- * Created by kkkkk on 2017/8/24.
+ * Created by kkkkk on 2017/8/25.
  */
 
-public class WeatherCity {
+public class WeatherEntity {
 
     private List<HeWeatherBean> HeWeather;
 
@@ -20,13 +20,13 @@ public class WeatherCity {
 
     public static class HeWeatherBean {
         /**
-         * aqi : {"city":{"aqi":"28","co":"0","no2":"10","o3":"87","pm10":"12","pm25":"7","qlty":"优","so2":"2"}}
-         * basic : {"city":"北京","cnty":"中国","id":"CN101010100","lat":"39.90498734","lon":"116.40528870","update":{"loc":"2017-08-24 13:46","utc":"2017-08-24 05:46"}}
-         * daily_forecast : [{"astro":{"mr":"07:58","ms":"20:33","sr":"05:35","ss":"18:58"},"cond":{"code_d":"100","code_n":"101","txt_d":"晴","txt_n":"多云"},"date":"2017-08-24","hum":"28","pcpn":"0.0","pop":"0","pres":"1011","tmp":{"max":"33","min":"20"},"uv":"8","vis":"19","wind":{"deg":"324","dir":"西北风","sc":"微风","spd":"10"}},{"astro":{"mr":"09:01","ms":"21:05","sr":"05:36","ss":"18:57"},"cond":{"code_d":"101","code_n":"100","txt_d":"多云","txt_n":"晴"},"date":"2017-08-25","hum":"20","pcpn":"0.0","pop":"0","pres":"1014","tmp":{"max":"32","min":"19"},"uv":"8","vis":"20","wind":{"deg":"276","dir":"西风","sc":"微风","spd":"6"}},{"astro":{"mr":"10:02","ms":"21:36","sr":"05:37","ss":"18:55"},"cond":{"code_d":"101","code_n":"300","txt_d":"多云","txt_n":"阵雨"},"date":"2017-08-26","hum":"31","pcpn":"0.0","pop":"0","pres":"1017","tmp":{"max":"29","min":"18"},"uv":"4","vis":"20","wind":{"deg":"188","dir":"南风","sc":"微风","spd":"5"}}]
-         * hourly_forecast : [{"cond":{"code":"100","txt":"晴"},"date":"2017-08-24 16:00","hum":"44","pop":"0","pres":"1010","tmp":"32","wind":{"deg":"347","dir":"西北风","sc":"3-4","spd":"17"}},{"cond":{"code":"100","txt":"晴"},"date":"2017-08-24 19:00","hum":"52","pop":"0","pres":"1010","tmp":"29","wind":{"deg":"295","dir":"西北风","sc":"微风","spd":"9"}},{"cond":{"code":"100","txt":"晴"},"date":"2017-08-24 22:00","hum":"56","pop":"0","pres":"1011","tmp":"22","wind":{"deg":"282","dir":"西北风","sc":"微风","spd":"6"}}]
-         * now : {"cond":{"code":"100","txt":"晴"},"fl":"30","hum":"24","pcpn":"0","pres":"1010","tmp":"31","vis":"7","wind":{"deg":"345","dir":"西北风","sc":"微风","spd":"8"}}
+         * aqi : {"city":{"aqi":"50","co":"1","no2":"41","o3":"10","pm10":"50","pm25":"11","qlty":"优","so2":"4"}}
+         * basic : {"city":"北京","cnty":"中国","id":"CN101010100","lat":"39.90498734","lon":"116.40528870","update":{"loc":"2017-08-25 08:46","utc":"2017-08-25 00:46"}}
+         * daily_forecast : [{"astro":{"mr":"09:01","ms":"21:05","sr":"05:36","ss":"18:57"},"cond":{"code_d":"100","code_n":"100","txt_d":"晴","txt_n":"晴"},"date":"2017-08-25","hum":"20","pcpn":"0.0","pop":"0","pres":"1013","tmp":{"max":"32","min":"19"},"uv":"8","vis":"20","wind":{"deg":"268","dir":"西风","sc":"微风","spd":"5"}},{"astro":{"mr":"10:02","ms":"21:36","sr":"05:37","ss":"18:55"},"cond":{"code_d":"101","code_n":"300","txt_d":"多云","txt_n":"阵雨"},"date":"2017-08-26","hum":"28","pcpn":"0.0","pop":"0","pres":"1016","tmp":{"max":"29","min":"18"},"uv":"4","vis":"20","wind":{"deg":"252","dir":"西南风","sc":"微风","spd":"16"}},{"astro":{"mr":"11:01","ms":"22:08","sr":"05:38","ss":"18:54"},"cond":{"code_d":"300","code_n":"104","txt_d":"阵雨","txt_n":"阴"},"date":"2017-08-27","hum":"68","pcpn":"17.8","pop":"100","pres":"1013","tmp":{"max":"23","min":"17"},"uv":"2","vis":"15","wind":{"deg":"215","dir":"西南风","sc":"微风","spd":"5"}}]
+         * hourly_forecast : [{"cond":{"code":"100","txt":"晴"},"date":"2017-08-25 10:00","hum":"40","pop":"0","pres":"1014","tmp":"27","wind":{"deg":"330","dir":"西北风","sc":"3-4","spd":"19"}},{"cond":{"code":"100","txt":"晴"},"date":"2017-08-25 13:00","hum":"27","pop":"0","pres":"1012","tmp":"28","wind":{"deg":"310","dir":"西北风","sc":"微风","spd":"16"}},{"cond":{"code":"100","txt":"晴"},"date":"2017-08-25 16:00","hum":"39","pop":"0","pres":"1010","tmp":"30","wind":{"deg":"308","dir":"西北风","sc":"微风","spd":"15"}},{"cond":{"code":"100","txt":"晴"},"date":"2017-08-25 19:00","hum":"52","pop":"0","pres":"1011","tmp":"22","wind":{"deg":"245","dir":"西南风","sc":"微风","spd":"9"}},{"cond":{"code":"100","txt":"晴"},"date":"2017-08-25 22:00","hum":"61","pop":"0","pres":"1013","tmp":"21","wind":{"deg":"285","dir":"西北风","sc":"微风","spd":"8"}}]
+         * now : {"cond":{"code":"100","txt":"晴"},"fl":"26","hum":"31","pcpn":"0","pres":"1012","tmp":"26","vis":"7","wind":{"deg":"341","dir":"西北风","sc":"微风","spd":"5"}}
          * status : ok
-         * suggestion : {"air":{"brf":"中","txt":"气象条件对空气污染物稀释、扩散和清除无明显影响，易感人群应适当减少室外活动时间。"},"comf":{"brf":"较不舒适","txt":"白天天气晴好，明媚的阳光在给您带来好心情的同时，也会使您感到有些热，不很舒适。"},"cw":{"brf":"较适宜","txt":"较适宜洗车，未来一天无雨，风力较小，擦洗一新的汽车至少能保持一天。"},"drsg":{"brf":"炎热","txt":"天气炎热，建议着短衫、短裙、短裤、薄型T恤衫等清凉夏季服装。"},"flu":{"brf":"少发","txt":"各项气象条件适宜，发生感冒机率较低。但请避免长期处于空调房间中，以防感冒。"},"sport":{"brf":"较适宜","txt":"天气较好，但由于风力较大，推荐您在室内进行低强度运动，若在户外运动请注意避风。"},"trav":{"brf":"较适宜","txt":"天气较好，较热但风稍大，能缓解些炎热的感觉。较适宜旅游，您仍可陶醉于大自然美好风光中。"},"uv":{"brf":"强","txt":"紫外线辐射强，建议涂擦SPF20左右、PA++的防晒护肤品。避免在10点至14点暴露于日光下。"}}
+         * suggestion : {"air":{"brf":"中","txt":"气象条件对空气污染物稀释、扩散和清除无明显影响，易感人群应适当减少室外活动时间。"},"comf":{"brf":"较不舒适","txt":"白天天气晴好，明媚的阳光在给您带来好心情的同时，也会使您感到有些热，不很舒适。"},"cw":{"brf":"较适宜","txt":"较适宜洗车，未来一天无雨，风力较小，擦洗一新的汽车至少能保持一天。"},"drsg":{"brf":"炎热","txt":"天气炎热，建议着短衫、短裙、短裤、薄型T恤衫等清凉夏季服装。"},"flu":{"brf":"少发","txt":"各项气象条件适宜，发生感冒机率较低。但请避免长期处于空调房间中，以防感冒。"},"sport":{"brf":"较适宜","txt":"天气较好，户外运动请注意防晒，推荐您在室内进行低强度运动。"},"trav":{"brf":"适宜","txt":"天气较好，但稍感觉有些热，不过还是个好天气哦。适宜旅游，可不要错过机会呦！"},"uv":{"brf":"很强","txt":"紫外线辐射极强，建议涂擦SPF20以上、PA++的防晒护肤品，尽量避免暴露于日光下。"}}
          */
 
         private AqiBean aqi;
@@ -95,7 +95,7 @@ public class WeatherCity {
 
         public static class AqiBean {
             /**
-             * city : {"aqi":"28","co":"0","no2":"10","o3":"87","pm10":"12","pm25":"7","qlty":"优","so2":"2"}
+             * city : {"aqi":"50","co":"1","no2":"41","o3":"10","pm10":"50","pm25":"11","qlty":"优","so2":"4"}
              */
 
             private CityBean city;
@@ -110,14 +110,14 @@ public class WeatherCity {
 
             public static class CityBean {
                 /**
-                 * aqi : 28
-                 * co : 0
-                 * no2 : 10
-                 * o3 : 87
-                 * pm10 : 12
-                 * pm25 : 7
+                 * aqi : 50
+                 * co : 1
+                 * no2 : 41
+                 * o3 : 10
+                 * pm10 : 50
+                 * pm25 : 11
                  * qlty : 优
-                 * so2 : 2
+                 * so2 : 4
                  */
 
                 private String aqi;
@@ -202,7 +202,7 @@ public class WeatherCity {
              * id : CN101010100
              * lat : 39.90498734
              * lon : 116.40528870
-             * update : {"loc":"2017-08-24 13:46","utc":"2017-08-24 05:46"}
+             * update : {"loc":"2017-08-25 08:46","utc":"2017-08-25 00:46"}
              */
 
             private String city;
@@ -262,8 +262,8 @@ public class WeatherCity {
 
             public static class UpdateBean {
                 /**
-                 * loc : 2017-08-24 13:46
-                 * utc : 2017-08-24 05:46
+                 * loc : 2017-08-25 08:46
+                 * utc : 2017-08-25 00:46
                  */
 
                 private String loc;
@@ -290,13 +290,13 @@ public class WeatherCity {
         public static class NowBean {
             /**
              * cond : {"code":"100","txt":"晴"}
-             * fl : 30
-             * hum : 24
+             * fl : 26
+             * hum : 31
              * pcpn : 0
-             * pres : 1010
-             * tmp : 31
+             * pres : 1012
+             * tmp : 26
              * vis : 7
-             * wind : {"deg":"345","dir":"西北风","sc":"微风","spd":"8"}
+             * wind : {"deg":"341","dir":"西北风","sc":"微风","spd":"5"}
              */
 
             private CondBean cond;
@@ -400,10 +400,10 @@ public class WeatherCity {
 
             public static class WindBean {
                 /**
-                 * deg : 345
+                 * deg : 341
                  * dir : 西北风
                  * sc : 微风
-                 * spd : 8
+                 * spd : 5
                  */
 
                 private String deg;
@@ -452,9 +452,9 @@ public class WeatherCity {
              * cw : {"brf":"较适宜","txt":"较适宜洗车，未来一天无雨，风力较小，擦洗一新的汽车至少能保持一天。"}
              * drsg : {"brf":"炎热","txt":"天气炎热，建议着短衫、短裙、短裤、薄型T恤衫等清凉夏季服装。"}
              * flu : {"brf":"少发","txt":"各项气象条件适宜，发生感冒机率较低。但请避免长期处于空调房间中，以防感冒。"}
-             * sport : {"brf":"较适宜","txt":"天气较好，但由于风力较大，推荐您在室内进行低强度运动，若在户外运动请注意避风。"}
-             * trav : {"brf":"较适宜","txt":"天气较好，较热但风稍大，能缓解些炎热的感觉。较适宜旅游，您仍可陶醉于大自然美好风光中。"}
-             * uv : {"brf":"强","txt":"紫外线辐射强，建议涂擦SPF20左右、PA++的防晒护肤品。避免在10点至14点暴露于日光下。"}
+             * sport : {"brf":"较适宜","txt":"天气较好，户外运动请注意防晒，推荐您在室内进行低强度运动。"}
+             * trav : {"brf":"适宜","txt":"天气较好，但稍感觉有些热，不过还是个好天气哦。适宜旅游，可不要错过机会呦！"}
+             * uv : {"brf":"很强","txt":"紫外线辐射极强，建议涂擦SPF20以上、PA++的防晒护肤品，尽量避免暴露于日光下。"}
              */
 
             private AirBean air;
@@ -663,7 +663,7 @@ public class WeatherCity {
             public static class SportBean {
                 /**
                  * brf : 较适宜
-                 * txt : 天气较好，但由于风力较大，推荐您在室内进行低强度运动，若在户外运动请注意避风。
+                 * txt : 天气较好，户外运动请注意防晒，推荐您在室内进行低强度运动。
                  */
 
                 private String brf;
@@ -688,8 +688,8 @@ public class WeatherCity {
 
             public static class TravBean {
                 /**
-                 * brf : 较适宜
-                 * txt : 天气较好，较热但风稍大，能缓解些炎热的感觉。较适宜旅游，您仍可陶醉于大自然美好风光中。
+                 * brf : 适宜
+                 * txt : 天气较好，但稍感觉有些热，不过还是个好天气哦。适宜旅游，可不要错过机会呦！
                  */
 
                 private String brf;
@@ -714,8 +714,8 @@ public class WeatherCity {
 
             public static class UvBean {
                 /**
-                 * brf : 强
-                 * txt : 紫外线辐射强，建议涂擦SPF20左右、PA++的防晒护肤品。避免在10点至14点暴露于日光下。
+                 * brf : 很强
+                 * txt : 紫外线辐射极强，建议涂擦SPF20以上、PA++的防晒护肤品，尽量避免暴露于日光下。
                  */
 
                 private String brf;
@@ -741,17 +741,17 @@ public class WeatherCity {
 
         public static class DailyForecastBean {
             /**
-             * astro : {"mr":"07:58","ms":"20:33","sr":"05:35","ss":"18:58"}
-             * cond : {"code_d":"100","code_n":"101","txt_d":"晴","txt_n":"多云"}
-             * date : 2017-08-24
-             * hum : 28
+             * astro : {"mr":"09:01","ms":"21:05","sr":"05:36","ss":"18:57"}
+             * cond : {"code_d":"100","code_n":"100","txt_d":"晴","txt_n":"晴"}
+             * date : 2017-08-25
+             * hum : 20
              * pcpn : 0.0
              * pop : 0
-             * pres : 1011
-             * tmp : {"max":"33","min":"20"}
+             * pres : 1013
+             * tmp : {"max":"32","min":"19"}
              * uv : 8
-             * vis : 19
-             * wind : {"deg":"324","dir":"西北风","sc":"微风","spd":"10"}
+             * vis : 20
+             * wind : {"deg":"268","dir":"西风","sc":"微风","spd":"5"}
              */
 
             private AstroBean astro;
@@ -856,10 +856,10 @@ public class WeatherCity {
 
             public static class AstroBean {
                 /**
-                 * mr : 07:58
-                 * ms : 20:33
-                 * sr : 05:35
-                 * ss : 18:58
+                 * mr : 09:01
+                 * ms : 21:05
+                 * sr : 05:36
+                 * ss : 18:57
                  */
 
                 private String mr;
@@ -903,9 +903,9 @@ public class WeatherCity {
             public static class CondBeanX {
                 /**
                  * code_d : 100
-                 * code_n : 101
+                 * code_n : 100
                  * txt_d : 晴
-                 * txt_n : 多云
+                 * txt_n : 晴
                  */
 
                 private String code_d;
@@ -948,8 +948,8 @@ public class WeatherCity {
 
             public static class TmpBean {
                 /**
-                 * max : 33
-                 * min : 20
+                 * max : 32
+                 * min : 19
                  */
 
                 private String max;
@@ -974,10 +974,10 @@ public class WeatherCity {
 
             public static class WindBeanX {
                 /**
-                 * deg : 324
-                 * dir : 西北风
+                 * deg : 268
+                 * dir : 西风
                  * sc : 微风
-                 * spd : 10
+                 * spd : 5
                  */
 
                 private String deg;
@@ -1022,12 +1022,12 @@ public class WeatherCity {
         public static class HourlyForecastBean {
             /**
              * cond : {"code":"100","txt":"晴"}
-             * date : 2017-08-24 16:00
-             * hum : 44
+             * date : 2017-08-25 10:00
+             * hum : 40
              * pop : 0
-             * pres : 1010
-             * tmp : 32
-             * wind : {"deg":"347","dir":"西北风","sc":"3-4","spd":"17"}
+             * pres : 1014
+             * tmp : 27
+             * wind : {"deg":"330","dir":"西北风","sc":"3-4","spd":"19"}
              */
 
             private CondBeanXX cond;
@@ -1122,10 +1122,10 @@ public class WeatherCity {
 
             public static class WindBeanXX {
                 /**
-                 * deg : 347
+                 * deg : 330
                  * dir : 西北风
                  * sc : 3-4
-                 * spd : 17
+                 * spd : 19
                  */
 
                 private String deg;

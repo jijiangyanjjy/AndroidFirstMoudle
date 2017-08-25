@@ -12,5 +12,7 @@ public class ContractUtils {
 
     public static final String URL_WEATHER = "http://guolin.tech/api/weather?key=7dad83e9d9af45298bb5389958fe8fc6&cityid=";
 
+    public static final String URL_IMAGE = "http://guolin.tech/api/bing_pic";
+
 
 }
