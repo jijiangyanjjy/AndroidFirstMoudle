@@ -3,6 +3,8 @@ package com.zhiyuan3g.androidfirstmoudle.base;
 import android.app.Application;
 import android.content.Context;
 
+import com.zhiyuan3g.androidfirstmoudle.MainActivity;
+
 import org.litepal.LitePal;
 
 /**
