@@ -6,5 +6,6 @@
         <mapping class="com.zhiyuan3g.androidfirstmoudle.db.ProvinceDB"/>
         <mapping class="com.zhiyuan3g.androidfirstmoudle.db.CityDB"/>
         <mapping class="com.zhiyuan3g.androidfirstmoudle.db.CountryDB"/>
+        <mapping class="com.zhiyuan3g.androidfirstmoudle.db.WeatherDB"/>
     </list>
 </litepal>
