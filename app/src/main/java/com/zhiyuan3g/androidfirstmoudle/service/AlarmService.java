@@ -7,9 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 import android.os.SystemClock;
-import android.support.annotation.IntDef;
-
-import com.zhiyuan3g.androidfirstmoudle.base.MyApp;
 
 public class AlarmService extends Service {
 
