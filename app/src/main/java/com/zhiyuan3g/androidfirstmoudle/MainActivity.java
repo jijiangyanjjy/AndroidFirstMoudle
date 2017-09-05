@@ -1,5 +1,6 @@
 package com.zhiyuan3g.androidfirstmoudle;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
@@ -12,7 +13,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -22,13 +22,13 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.zhiyuan3g.androidfirstmoudle.db.CityDB;
 import com.zhiyuan3g.androidfirstmoudle.db.CountryDB;
 import com.zhiyuan3g.androidfirstmoudle.db.ProvinceDB;
 import com.zhiyuan3g.androidfirstmoudle.db.WeatherDB;
 import com.zhiyuan3g.androidfirstmoudle.entity.ProvinceEntity;
 import com.zhiyuan3g.androidfirstmoudle.entity.WeatherEntity;
 import com.zhiyuan3g.androidfirstmoudle.fragment.ProvinceFragment;
+import com.zhiyuan3g.androidfirstmoudle.service.AlarmService;
 import com.zhiyuan3g.androidfirstmoudle.utils.ContractUtils;
 import com.zhiyuan3g.androidfirstmoudle.utils.OkHttpCallBack;
 import com.zhiyuan3g.androidfirstmoudle.utils.OkHttpUtils;
@@ -164,6 +164,10 @@ public class MainActivity extends AppCompatActivity implements DrawerLayout.Draw
 
     public void getWeather(WeatherEntity weatherEntity) {
         try {
+            Intent intent = new Intent(this, AlarmService.class);
+            startService(intent);
+
+
             DataSupport.deleteAll(WeatherDB.class);
 
             WeatherDB weatherDB = new WeatherDB();
